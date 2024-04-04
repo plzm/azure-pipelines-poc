@@ -3,9 +3,9 @@ parameters:
 
 jobs:
 - job: deployFoundation
-  strategy:
-    matrix: $[ variables['AzureLocations'] ]
-    maxParallel: 1
+  #strategy:
+  #  matrix: $[ variables['AzureLocations'] ]
+  #  maxParallel: 1
   displayName: "Deploy Foundation:"
   dependsOn: ${{ parameters.DependsOn }}
   steps:
@@ -13,7 +13,7 @@ jobs:
 
     - template: step-set-azure-cli.yaml
 
-    - template: step-set-variables.yaml
+    #- template: step-set-variables.yaml
 
     #- template: step-deploy-resource-groups.yaml
 
