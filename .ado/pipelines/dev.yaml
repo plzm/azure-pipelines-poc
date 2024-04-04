@@ -1,7 +1,7 @@
 name: '$(Date:yyyyMMdd).$(Rev:rr)'
 
-trigger:
-  batch: true
+trigger: none
+  #batch: true
   #branches:
   #  include:
   #  - 'develop'
