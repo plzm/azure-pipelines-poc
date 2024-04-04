@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: deployFoundation
   strategy:
-    matrix: $(AzureLocations)
+    matrix: $[ variables['AzureLocations'] ]
   displayName: "Deploy Foundation:"
   dependsOn: ${{ parameters.DependsOn }}
   steps:
