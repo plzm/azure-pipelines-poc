@@ -1,0 +1,112 @@
+steps:
+- task: AzureCLI@2
+  displayName: 'Set Azure Identifiers to Environment Variables'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      $AzureTenantId = "$(az account show -o tsv --query 'tenantId')"
+      echo "##vso[task.setvariable variable=AzureTenantId;isoutput=false]$AzureTenantId"
+
+      $AzureSubscriptionName = "$(az account show -o tsv --query 'name')"
+      echo "##vso[task.setvariable variable=AzureSubscriptionName;isoutput=false]$AzureSubscriptionName"
+
+      $AzureSubscriptionId = "$(az account show -o tsv --query 'id')"
+      echo "##vso[task.setvariable variable=AzureSubscriptionId;isoutput=false]$AzureSubscriptionId"
+
+- task: Powershell@2
+  displayName: 'Set Azure DevOps Variable Group Names to Environment Variables'
+  inputs:
+    targetType: inline
+    script: |
+      $VgNameAll = "vg-all"
+      echo "##vso[task.setvariable variable=VgNameAll;isoutput=false]$VgNameAll"
+
+      $VgNameEnv = "vg-$(EnvironmentInfix)"
+      echo "##vso[task.setvariable variable=VgNameEnv;isoutput=false]$VgNameEnv"
+
+- task: Powershell@2
+  displayName: 'Set Tags to Environment Variables'
+  inputs:
+    targetType: inline
+    script: |
+      # Tags variables
+      # We are running in Powershell but calling az group create, so have to pass the cli-expected space-separated list of k=v tags as an array
+      # The tag values cannot be enclosed in single/double quotes and cannot contain whitespace
+
+      # Replace : with - in the timestamp because : breaks ARM template tag parameter
+      $timestampTagValue = (Get-Date -AsUTC -format s).Replace(":", "-") + "Z"
+      $timestampTag = "$(tagNameTimestamp)=$timestampTagValue"
+
+      $workloadTag = "$(tagNameWorkload)=$(WorkloadInfix)"
+      $envTag = "$(tagNameEnv)=$(EnvironmentName)"
+      $scopeTag = "$(tagNameScope)=$(tagValueScope)"
+
+      $TagsCli = @($workloadTag, $envTag, $scopeTag, $timestampTag)
+      echo "##vso[task.setvariable variable=TagsCli;isoutput=false]$TagsCli"
+
+      $tagsObject = @{}
+      $tagsObject['$(tagNameWorkload)'] = '$(WorkloadInfix)'
+      $tagsObject['$(tagNameEnv)'] = '$(EnvironmentName)'
+      $tagsObject['$(tagNameScope)'] = '$(tagValueScope)'
+      $tagsObject['$(tagNameTimestamp)'] = ($timestampTagValue)   # WARNING - this LOOKS wrong but it's not! Test carefully before you change this. Strange Powershell variable expansion rules.
+
+      # The following manipulations are needed for separate un-escaping by Powershell AND by Azure CLI, and to get CLI to correctly see the tags as a JSON string
+      # passed into ARM templates as an object type.
+      $TagsJson = ConvertTo-Json -InputObject $tagsObject -Compress
+      $TagsJson = $TagsJson.Replace('"', '''')
+      $TagsJson = "`"$TagsJson`""
+      echo "##vso[task.setvariable variable=TagsJson;isoutput=false]$TagsJson"
+
+- task: Powershell@2
+  displayName: 'Set Dynamic Values to Environment Variables'
+  inputs:
+    targetType: inline
+    script: |
+      # Infixes for variable names which will be emitted to Environment for later pipeline steps
+      $nameInfix = "$(WorkloadInfix)-$(EnvironmentLetter)-$(AzureLocation)"
+      $rgNamePrefix = "rsg-$nameInfix"
+      $uaiNamePrefix = "uai-$nameInfix"
+      $storageNamePrefix = "sa" + $nameInfix.Replace("-", "").ToLowerInvariant()  # Storage account names can only have alphanumerics and must be lowercase
+      $nsgNamePrefix = "nsg-$nameInfix"
+      $nsgFlowLogNamePrefix = "nfl-$nameInfix"
+      $vnetNamePrefix = "vnt=$nameInfix"
+      $subnetNamePrefix = "snt-$nameInfix"
+      $kvNamePrefix = "kv-$nameInfix"
+
+      # The following variables are composed from config and from the above prefixes, and these are written out to env vars for the rest of the job to use
+
+      # ##################################################
+      # Resource Group Names
+      $RgNameMain = "$rgNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=RgNameMain;isoutput=false]$RgNameMain"
+
+      $RgNameNetwork = "$rgNamePrefix-network-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=RgNameNetwork;isoutput=false]$RgNameNetwork"
+
+      $RgNameWorkload = "$rgNamePrefix-workload-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=RgNameWorkload;isoutput=false]$RgNameWorkload"
+      # ##################################################
+
+      # ##################################################
+      # Resource Names
+      $UaiName = "$uaiNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=StorageAccountName;isoutput=false]$StorageAccountName"
+
+      $StorageAccountName = "$storageNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=StorageAccountName;isoutput=false]$StorageAccountName"
+
+      $NsgName = "$nsgNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=NsgName;isoutput=false]$NsgName"
+
+      $NsgFlowLogName = "$nsgFlowLogNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=NsgFlowLogName;isoutput=false]$NsgFlowLogName"
+
+      $VNetName = "$vnetNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=VNetName;isoutput=false]$VNetName"
+
+      $KeyVaultName = "$kvNamePrefix-$(AzureLocation)"
+      echo "##vso[task.setvariable variable=KeyVaultName;isoutput=false]$KeyVaultName"
+
+      # ##################################################

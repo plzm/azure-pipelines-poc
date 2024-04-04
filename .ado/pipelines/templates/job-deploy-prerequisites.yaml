@@ -1,0 +1,20 @@
+parameters:
+  DependsOn: []
+
+jobs:
+- job: deployPrerequisites
+  displayName: "Deploy Pre-Requisites:"
+  dependsOn: ${{ parameters.DependsOn }}
+  steps:
+    - checkout: self
+
+    - template: step-set-azure-cli.yaml
+
+    - task: AzureCLI@2
+      displayName: 'Register Azure Resource Providers'
+      inputs:
+        azureSubscription: '$(AzureServiceConnection)'
+        scriptType: pscore
+        scriptLocation: inlineScript
+        inlineScript: |
+          az provider register --namespace 'Microsoft.ChangeAnalysis' --accept-terms --consent-to-permissions --wait

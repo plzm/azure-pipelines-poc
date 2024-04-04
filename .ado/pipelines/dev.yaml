@@ -1,0 +1,19 @@
+name: '$(Date:yyyyMMdd).$(Rev:rr)'
+
+trigger:
+  batch: true
+  #branches:
+  #  include:
+  #  - 'develop'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: vg-all
+- group: vg-dev
+- name: 'AzureServiceConnection'
+  value: 'sc-$(EnvironmentInfix)'
+
+stages:
+- template: templates/stage-deploy-infra.yaml
