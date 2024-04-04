@@ -5,6 +5,7 @@ jobs:
 - job: deployFoundation
   strategy:
     matrix: $[ variables['AzureLocations'] ]
+    maxParallel: 1
   displayName: "Deploy Foundation:"
   dependsOn: ${{ parameters.DependsOn }}
   steps:
