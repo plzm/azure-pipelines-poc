@@ -13,7 +13,7 @@ variables:
 - group: vg-all
 - group: vg-dev
 - name: 'AzureServiceConnection'
-  value: 'sc-$(EnvironmentInfix)'
+  value: 'sc-dev'
 
 stages:
 - template: templates/stage-deploy-infra.yaml
