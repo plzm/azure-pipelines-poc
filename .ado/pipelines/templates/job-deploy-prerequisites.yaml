@@ -10,11 +10,4 @@ jobs:
 
     - template: step-set-azure-cli.yaml
 
-    - task: AzureCLI@2
-      displayName: 'Register Azure Resource Providers'
-      inputs:
-        azureSubscription: '$(AzureServiceConnection)'
-        scriptType: pscore
-        scriptLocation: inlineScript
-        inlineScript: |
-          az provider register --namespace 'Microsoft.ChangeAnalysis' --accept-terms --consent-to-permissions --wait
+    - template: step-register-azure-rps.yaml

@@ -5,10 +5,10 @@ stages:
   - template: job-deploy-prerequisites.yaml
 
   # deployFoundation
-  - template: job-deploy-foundation.yaml
-    parameters:
-      DependsOn:
-      - deployPrerequisites
+  #- template: job-deploy-foundation.yaml
+  #  parameters:
+  #    DependsOn:
+  #    - deployPrerequisites
 
   ## deployNetwork
   #- template: job-deploy-network.yaml
