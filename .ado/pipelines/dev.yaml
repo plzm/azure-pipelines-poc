@@ -9,6 +9,8 @@ stages:
 - stage: deploy
   jobs:
   - job: deployPrerequisites
+    strategy:
+      parallel: 1
     displayName: "Deploy Pre-Requisites:"
     steps:
       - checkout: self
