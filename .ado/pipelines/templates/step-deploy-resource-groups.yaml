@@ -1,0 +1,12 @@
+steps:
+- task: AzureCLI@2
+  name: deployResourceGroups
+  displayName: 'Deploy Resource Groups'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      az group create -n $(RgNameMain) -l $(AzureLocation) --tags $(TagsCli) --verbose
+      az group create -n $(RgNameNetwork) -l $(AzureLocation) --tags $(TagsCli) --verbose
+      az group create -n $(RgNameWorkload) -l $(AzureLocation) --tags $(TagsCli) --verbose
