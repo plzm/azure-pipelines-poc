@@ -1,23 +1,19 @@
 name: '$(Date:yyyyMMdd).$(Rev:rr)'
 
 trigger: none
+  #batch: true
+  #branches:
+  #  include:
+  #  - 'develop'
 
 pool:
   vmImage: 'ubuntu-latest'
 
-stages:
-- stage: deploy
-  jobs:
-  - job: deployPrerequisites
-    strategy:
-      parallel: 1
-    displayName: "Deploy Pre-Requisites:"
-    steps:
-      - checkout: self
+variables:
+- group: vg-all
+- group: vg-dev
+- name: 'AzureServiceConnection'
+  value: 'sc-dev'
 
-      - task: Powershell@2
-        displayName: "Set Azure CLI to auto-install needed extensions"
-        inputs:
-          targetType: inline
-          script: |
-            az config set extension.use_dynamic_install=yes_without_prompt
+stages:
+- template: templates/stage-deploy-infra.yaml
