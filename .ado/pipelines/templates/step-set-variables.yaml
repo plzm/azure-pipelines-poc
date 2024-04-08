@@ -41,15 +41,13 @@ steps:
 
       $workloadTag = "$(TagNameWorkload)=$(WorkloadInfix)"
       $envTag = "$(TagNameEnv)=$(EnvironmentName)"
-      $scopeTag = "$(TagNameScope)=$(tagValueScope)"
 
-      $TagsCli = @($workloadTag, $envTag, $scopeTag, $timestampTag)
+      $TagsCli = @($workloadTag, $envTag, $timestampTag)
       echo "##vso[task.setvariable variable=TagsCli;isoutput=false]$TagsCli"
 
       $tagsObject = @{}
       $tagsObject['$(TagNameWorkload)'] = '$(WorkloadInfix)'
       $tagsObject['$(TagNameEnv)'] = '$(EnvironmentName)'
-      $tagsObject['$(TagNameScope)'] = '$(tagValueScope)'
       $tagsObject['$(TagNameTimestamp)'] = ($timestampTagValue)   # WARNING - this LOOKS wrong but it's not! Test carefully before you change this. Strange Powershell variable expansion rules.
 
       # The following manipulations are needed for separate un-escaping by Powershell AND by Azure CLI, and to get CLI to correctly see the tags as a JSON string
