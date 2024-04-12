@@ -9,6 +9,7 @@ jobs:
   dependsOn: ${{ parameters.DependsOn }}
   steps:
     - checkout: self
+    - checkout: git://PipelineTemplates/Utilities
 
     - template: step-set-azure-cli.yaml
 
