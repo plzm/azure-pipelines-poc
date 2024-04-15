@@ -1,0 +1,28 @@
+parameters:
+  DependsOn: []
+
+jobs:
+- job: deployFoundation
+  strategy:
+    matrix: $[ variables['AzureLocations'] ]
+  displayName: "Deploy Foundation: "
+  dependsOn: ${{ parameters.DependsOn }}
+  steps:
+    - checkout: self
+    - checkout: git://PipelineTemplates/Utilities
+
+    - template: step-set-azure-cli.yaml
+
+    - template: step-set-variables.yaml
+
+    - template: step-deploy-resource-groups.yaml
+
+    #- template: step-deploy-log-analytics-workspace.yaml
+
+    #- template: step-deploy-subscription-diagnostics.yaml
+
+    #- template: step-deploy-user-assigned-identity.yaml
+
+    #- template: step-set-variables-user-assigned-identity.yaml
+
+    #- template: step-deploy-role-assignments-sub.yaml

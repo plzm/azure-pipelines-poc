@@ -1,0 +1,15 @@
+stages:
+- stage: destroy
+  jobs:
+  - job: destroyInfrastructure
+    strategy:
+      matrix: $[ variables['AzureLocations'] ]
+    displayName: "Destroy Infrastructure: "
+    steps:
+      - checkout: self
+
+      - template: step-set-azure-cli.yaml
+
+      - template: step-set-variables.yaml
+
+      - template: step-destroy-resource-groups.yaml

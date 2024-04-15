@@ -1,0 +1,11 @@
+parameters:
+  DependsOn: []
+
+jobs:
+- job: deployPrerequisites
+  displayName: "Deploy Pre-Requisites"
+  dependsOn: ${{ parameters.DependsOn }}
+  steps:
+    - template: step-set-azure-cli.yaml
+
+    - template: step-register-azure-rps.yaml

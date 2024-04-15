@@ -1,0 +1,7 @@
+steps:
+- task: Powershell@2
+  displayName: "Set Azure CLI to auto-install needed extensions"
+  inputs:
+    targetType: inline
+    script: |
+      az config set extension.use_dynamic_install=yes_without_prompt
