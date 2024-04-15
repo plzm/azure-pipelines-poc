@@ -1,0 +1,12 @@
+steps:
+- task: AzureCLI@2
+  name: destroyResourceGroups
+  displayName: 'Destroy Resource Groups'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      az group delete -y -n $(RgNameWorkload)
+      az group delete -y -n $(RgNameNetwork)
+      az group delete -y -n $(RgNameMain)
