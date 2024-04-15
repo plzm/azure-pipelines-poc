@@ -2,6 +2,8 @@ stages:
 - stage: destroy
   jobs:
   - job: destroyInfrastructure
+    strategy:
+      matrix: $[ variables['AzureLocations'] ]
     displayName: "Destroy Infrastructure: "
     steps:
       - checkout: self
