@@ -1,0 +1,43 @@
+parameters:
+- name: taskName
+  displayName: 'Task name'
+  type: string
+  default: 'Deploy Diagnostics'
+- name: resourceGroupName
+  displayName: 'Resource Group to deploy to'
+  type: string
+- name: resourceId
+  displayName: 'Resource ID that is getting the diagnostics setting'
+  type: string
+- name: resourceName
+  displayName: 'Resource name that is getting the diagnostics setting'
+  type: string
+- name: sendLogs
+  displayName: 'Send logs'
+  type: string
+  default: true
+- name: sendMetrics
+  displayName: 'Send metrics'
+  type: string
+  default: true
+
+steps:
+- task: AzureCLI@2
+  displayName: "${{ parameters.taskName }}"
+  inputs:
+    azureSubscription: '$(azureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./scripts/azure/monitor.functions.ps1
+
+      $diagnosticsSettingName = "$(prefixDiagnosticsSettings)-${{ parameters.resourceName }}-$(environmentLetter)"
+
+      New-DiagnosticsSetting `
+        -SubscriptionId "$(azureSubscriptionId)" `
+        -ResourceGroupName ${{ parameters.resourceGroupName }} `
+        -DiagnosticsSettingName $diagnosticsSettingName `
+        -LogAnalyticsWorkspaceId $(logAnalyticsWorkspaceResourceId) `
+        -ResourceId ${{ parameters.resourceId }} `
+        -SendLogs ${{ parameters.sendLogs }} `
+        -SendMetrics ${{ parameters.sendMetrics }}

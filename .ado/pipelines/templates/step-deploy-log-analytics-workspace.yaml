@@ -1,0 +1,18 @@
+steps:
+- task: AzureCLI@2
+  displayName: 'Deploy Log Analytics Workspace'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      az deployment group create `
+        -n "$(LogAnalyticsWorkspaceName)" `
+        -g "$(RgNameMain)" `
+        --template-file "$(UriPrefixArmTemplates)monitor.log-analytics-workspace.json" `
+        --parameters `
+        location=$(AzureLocation) `
+        workspaceName=$(LogAnalyticsWorkspaceName) `
+        publicNetworkAccessForIngestion=$(PublicNetworkAccessMonitor) `
+        publicNetworkAccessForQuery=$(PublicNetworkAccessMonitor) `
+        tags=$(TagsJson)

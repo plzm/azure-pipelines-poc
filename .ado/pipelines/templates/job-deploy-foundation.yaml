@@ -13,11 +13,28 @@ jobs:
 
     - template: step-set-azure-cli.yaml
 
+    - task: Powershell@2
+      displayName: "Download and import plzm.Azure module"
+      inputs:
+        targetType: inline
+        script: |
+          . ./scripts/Module.ps1
+          Get-PlzmAzureModule -UrlRoot $(UriPs1ModulePlzmAzure)
+
     - template: step-set-variables.yaml
 
     - template: step-deploy-resource-groups.yaml
 
-    #- template: step-deploy-log-analytics-workspace.yaml
+    - template: step-deploy-log-analytics-workspace.yaml
+
+    - template: step-deploy-diagnostics.yaml
+      parameters:
+      taskName: 'Deploy Log Analytics Workspace Diagnostics'
+      resourceGroupName: $(RgNameMain)
+      resourceId: $(LogAnalyticsWorkspaceResourceId)
+      resourceName: $(LogAnalyticsWorkspaceName)
+      sendLogs: true
+      sendMetrics: true
 
     #- template: step-deploy-subscription-diagnostics.yaml
 
