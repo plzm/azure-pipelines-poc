@@ -1,0 +1,23 @@
+parameters:
+- name: ResourceGroupName
+  displayName: 'Resource Group to deploy to'
+  type: string
+- name: UaiName
+  displayName: 'User Assigned Identity Name'
+  type: string
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Set Variables - User Assigned Identity'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      Write-Debug -Debug:$true -Message "Get UAI ${{ parameters.UaiName }}"
+      $uai = "$(az identity show -g ${{ parameters.ResourceGroupName }} -n ${{ parameters.UaiName }}" | ConvertFrom-Json
+
+      Write-Debug -Debug:$true -Message "Write Env Var: UaiClientId=$uai.clientId"
+      echo "##vso[task.setvariable variable=UaiClientId;isoutput=false]$uai.clientId"
+      Write-Debug -Debug:$true -Message "Write Env Var: UaiPrincipalId=$uai.principalId"
+      echo "##vso[task.setvariable variable=UaiPrincipalId;isoutput=false]$uai.principalId"

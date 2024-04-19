@@ -26,20 +26,30 @@ jobs:
     - template: step-deploy-resource-groups.yaml
 
     - template: step-deploy-log-analytics-workspace.yaml
+      parameters:
+        ResourceGroupName: $(RgNameMain)
+        LogAnalyticsWorkspaceName: $(LogAnalyticsWorkspaceName)
 
     - template: step-deploy-diagnostics.yaml
       parameters:
-      taskName: 'Deploy Log Analytics Workspace Diagnostics'
-      resourceGroupName: $(RgNameMain)
-      resourceId: $(LogAnalyticsWorkspaceResourceId)
-      resourceName: $(LogAnalyticsWorkspaceName)
-      sendLogs: true
-      sendMetrics: true
+        TaskName: 'Deploy Log Analytics Workspace Diagnostics'
+        ResourceGroupName: $(RgNameMain)
+        ResourceId: $(LogAnalyticsWorkspaceResourceId)
+        SendAllLogs: true
+        SendMetrics: true
 
-    #- template: step-deploy-subscription-diagnostics.yaml
+    - template: step-deploy-user-assigned-identity.yaml
+      parameters:
+        ResourceGroupName: $(RgNameMain)
+        UaiName: $(UaiName)
 
-    #- template: step-deploy-user-assigned-identity.yaml
+    - task: Delay@1
+      inputs:
+        delayForMinutes: '1'
 
-    #- template: step-set-variables-user-assigned-identity.yaml
+    - template: step-set-variables-user-assigned-identity.yaml
+      parameters:
+        ResourceGroupName: $(RgNameMain)
+        UaiName: $(UaiName)
 
-    #- template: step-deploy-role-assignments-sub.yaml
+    - template: steps-deploy-role-assignments-sub.yaml

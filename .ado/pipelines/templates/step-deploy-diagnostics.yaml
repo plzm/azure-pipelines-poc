@@ -1,43 +1,39 @@
 parameters:
-- name: taskName
+- name: TaskName
   displayName: 'Task name'
   type: string
   default: 'Deploy Diagnostics'
-- name: resourceGroupName
+- name: ResourceGroupName
   displayName: 'Resource Group to deploy to'
   type: string
-- name: resourceId
+- name: ResourceId
   displayName: 'Resource ID that is getting the diagnostics setting'
   type: string
-- name: resourceName
-  displayName: 'Resource name that is getting the diagnostics setting'
-  type: string
-- name: sendLogs
-  displayName: 'Send logs'
+- name: SendAllLogs
+  displayName: 'Send all logs'
   type: string
   default: true
-- name: sendMetrics
+- name: SendMetrics
   displayName: 'Send metrics'
   type: string
   default: true
 
 steps:
 - task: AzureCLI@2
-  displayName: "${{ parameters.taskName }}"
+  displayName: "${{ parameters.TaskName }}"
   inputs:
-    azureSubscription: '$(azureServiceConnection)'
+    azureSubscription: '$(AzureServiceConnection)'
     scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
-      . ./scripts/azure/monitor.functions.ps1
+      $output = plzm.Azure\Deploy-DiagnosticsSetting `
+        -SubscriptionID "$(AzureSubscriptionId)" `
+        -ResourceGroupName ${{ parameters.ResourceGroupName }} `
+        -TemplateUri ($(UriPrefixArmTemplates) + "diagnostic-settings.json") `
+        -ResourceId "${{ parameters.ResourceId }}" `
+        -DiagnosticsSettingName ("diag-" + "$(LogAnalyticsWorkspaceName)") `
+        -LogAnalyticsWorkspaceResourceId "$(LogAnalyticsWorkspaceResourceId)" `
+        -SendAllLogs ${{ parameters.SendAllLogs }} `
+        -SendMetrics ${{ parameters.SendMetrics }}
 
-      $diagnosticsSettingName = "$(prefixDiagnosticsSettings)-${{ parameters.resourceName }}-$(environmentLetter)"
-
-      New-DiagnosticsSetting `
-        -SubscriptionId "$(azureSubscriptionId)" `
-        -ResourceGroupName ${{ parameters.resourceGroupName }} `
-        -DiagnosticsSettingName $diagnosticsSettingName `
-        -LogAnalyticsWorkspaceId $(logAnalyticsWorkspaceResourceId) `
-        -ResourceId ${{ parameters.resourceId }} `
-        -SendLogs ${{ parameters.sendLogs }} `
-        -SendMetrics ${{ parameters.sendMetrics }}
+      Write-Debug -Debug:$true -Message "$output"

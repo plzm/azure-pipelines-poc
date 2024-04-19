@@ -11,6 +11,7 @@ pool:
 
 variables:
 - group: vg-all
+- group: vg-security
 - group: vg-dev
 - name: 'AzureServiceConnection'
   value: 'sc-dev'
