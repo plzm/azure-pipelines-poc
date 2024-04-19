@@ -18,7 +18,7 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          . ./scripts/Module.ps1
+          . ./azure-pipelines-poc/scripts/Module.ps1
           Get-PlzmAzureModule -UrlRoot $(UriPs1ModulePlzmAzure)
 
     - template: step-set-variables.yaml
