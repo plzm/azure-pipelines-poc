@@ -43,9 +43,12 @@ jobs:
         ResourceGroupName: $(RgNameMain)
         UaiName: $(UaiName)
 
-    - task: Delay@1
+    - task: Powershell@2
+      displayName: "Wait for UAI provisioning to complete"
       inputs:
-        delayForMinutes: '1'
+        targetType: inline
+        script: |
+          Start-Sleep -s 60
 
     - template: step-set-variables-user-assigned-identity.yaml
       parameters:
