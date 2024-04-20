@@ -1,3 +1,8 @@
+$moduleName = "plzm.Azure"
+$localFolderPath = "./modules/$moduleName/"
+$psm1FileName = "$moduleName.psm1"
+$psd1FileName = "$moduleName.psd1"
+
 function Get-PlzmAzureModule()
 {
   [CmdletBinding()]
@@ -7,11 +12,6 @@ function Get-PlzmAzureModule()
     [object]
     $UrlRoot
   )
-
-  $moduleName = "plzm.Azure"
-  $localFolderPath = "./modules/$moduleName/"
-  $psm1FileName = "$moduleName.psm1"
-  $psd1FileName = "$moduleName.psd1"
 
   if (!(Test-Path -Path $localFolderPath))
   {
@@ -26,9 +26,16 @@ function Get-PlzmAzureModule()
   $url = ($UrlRoot + $psd1FileName)
   Invoke-WebRequest -Uri "$url" -OutFile ($localFolderPath + $psd1FileName)
 
+  return $localFolderPath
+}
+
+function Import-PlzmAzureModule()
+{
+  [CmdletBinding()]
+  param
+  (
+  )
   Import-Module "$localFolderPath" -Force
 
   Write-Debug -Debug:$true -Message "Module $moduleName imported from $localFolderPath with version $((Get-Module $moduleName).Version)"
-
-  return $localFolderPath
 }

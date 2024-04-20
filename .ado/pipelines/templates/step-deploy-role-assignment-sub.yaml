@@ -22,6 +22,9 @@ steps:
     scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
       $output = plzm.Azure\Deploy-RoleAssignmentSub `
         -Location $(AzureLocation) `
         -TemplateUri ($(UriPrefixArmTemplates) + "authorization.role-assignment.sub.json") `

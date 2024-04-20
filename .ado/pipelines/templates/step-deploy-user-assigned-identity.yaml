@@ -14,6 +14,9 @@ steps:
     scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
       $output = plzm.Azure\Deploy-UserAssignedIdentity `
         -SubscriptionID "$(AzureSubscriptionId)" `
         -Location $(AzureLocation) `
