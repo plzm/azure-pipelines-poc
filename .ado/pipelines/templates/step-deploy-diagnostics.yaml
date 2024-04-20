@@ -11,11 +11,11 @@ parameters:
   type: string
 - name: SendAllLogs
   displayName: 'Send all logs'
-  type: string
+  type: boolean
   default: true
 - name: SendMetrics
   displayName: 'Send metrics'
-  type: string
+  type: boolean
   default: true
 
 steps:
