@@ -15,7 +15,7 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       Write-Debug -Debug:$true -Message "Get UAI ${{ parameters.UaiName }}"
-      $uai = "$(az identity show -g ${{ parameters.ResourceGroupName }} -n ${{ parameters.UaiName }}" | ConvertFrom-Json
+      $uai = "$(az identity show -g ${{ parameters.ResourceGroupName }} -n ${{ parameters.UaiName }})" | ConvertFrom-Json
 
       Write-Debug -Debug:$true -Message "Write Env Var: UaiClientId=$uai.clientId"
       echo "##vso[task.setvariable variable=UaiClientId;isoutput=false]$uai.clientId"
