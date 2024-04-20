@@ -29,6 +29,9 @@ steps:
       . ./azure-pipelines-poc/scripts/Module.ps1
       Import-PlzmAzureModule
 
+      $sendAllLogs = if ("${{ parameters.SendAllLogs }}" -eq "true") { $true } else { $false }
+      $sendMetrics = if ("${{ parameters.SendMetrics }}" -eq "true") { $true } else { $false }
+
       $templateUri = "$(UriPrefixArmTemplates)diagnostic-settings.json"
 
       $output = plzm.Azure\Deploy-DiagnosticsSetting `
@@ -38,7 +41,7 @@ steps:
         -ResourceId "${{ parameters.ResourceId }}" `
         -DiagnosticsSettingName ("diag-" + "$(LogAnalyticsWorkspaceName)") `
         -LogAnalyticsWorkspaceResourceId "$(LogAnalyticsWorkspaceResourceId)" `
-        -SendAllLogs ${{ parameters.SendAllLogs }} `
-        -SendMetrics ${{ parameters.SendMetrics }}
+        -SendAllLogs $sendAllLogs `
+        -SendMetrics $sendMetrics
 
       Write-Debug -Debug:$true -Message "$output"
