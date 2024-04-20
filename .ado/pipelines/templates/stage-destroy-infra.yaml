@@ -28,17 +28,17 @@ stages:
 
       - template: step-delete-diagnostics-settings.yaml
         parameters:
-          TaskName: 'Destroy Diagnostics Settings: $(RgNameWorkload)'
+          TaskName: 'Destroy Diagnostics Settings: Workload RG'
           ResourceGroupName: $(RgNameWorkload)
 
       - template: step-delete-diagnostics-settings.yaml
         parameters:
-          TaskName: 'Destroy Diagnostics Settings: $(RgNameNetwork)'
+          TaskName: 'Destroy Diagnostics Settings: Network RG'
           ResourceGroupName: $(RgNameNetwork)
 
       - template: step-delete-diagnostics-settings.yaml
         parameters:
-          TaskName: 'Destroy Diagnostics Settings: $(RgNameMain)'
+          TaskName: 'Destroy Diagnostics Settings: Main RG'
           ResourceGroupName: $(RgNameMain)
 
       - template: step-delete-role-assignments-sub.yaml
