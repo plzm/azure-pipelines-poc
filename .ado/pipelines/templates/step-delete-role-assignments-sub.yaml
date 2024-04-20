@@ -11,4 +11,4 @@ steps:
 
       plzm.Azure\Remove-RoleAssignments `
         -SubscriptionId "$(AzureSubscriptionId)" `
-        -PrincipalId "$(PrincipalId)"
+        -PrincipalId "$(UaiPrincipalId)"
