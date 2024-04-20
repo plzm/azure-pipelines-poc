@@ -7,6 +7,7 @@ stages:
     displayName: "Destroy Infrastructure: "
     steps:
       - checkout: self
+      - checkout: git://PipelineTemplates/Utilities
 
       - template: step-set-azure-cli.yaml
 
