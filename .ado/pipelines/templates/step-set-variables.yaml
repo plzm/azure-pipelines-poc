@@ -20,9 +20,6 @@ steps:
   inputs:
     targetType: inline
     script: |
-      . ./azure-pipelines-poc/scripts/Module.ps1
-      Import-PlzmAzureModule
-
       # Tags variables
       # We are running in Powershell but calling az group create, so have to pass the cli-expected space-separated list of k=v tags as an array
       # The tag values cannot be enclosed in single/double quotes and cannot contain whitespace
