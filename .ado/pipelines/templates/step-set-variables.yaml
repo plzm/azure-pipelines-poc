@@ -51,6 +51,9 @@ steps:
   inputs:
     targetType: inline
     script: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
       # Infixes for variable names which will be emitted to Environment for later pipeline steps
       $nameInfix = "$(WorkloadInfix)-$(EnvironmentLetter)-$(AzureLocation)"
       $rgNamePrefix = "rsg-$nameInfix"
