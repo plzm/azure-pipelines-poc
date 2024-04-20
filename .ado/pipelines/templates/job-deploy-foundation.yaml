@@ -34,7 +34,7 @@ jobs:
       parameters:
         TaskName: 'Deploy Log Analytics Workspace Diagnostics'
         ResourceGroupName: $(RgNameMain)
-        ResourceId: $(LogAnalyticsWorkspaceResourceId)
+        ResourceId: $(LogAnalyticsWorkspaceId)
         SendAllLogs: true
         SendMetrics: true
 

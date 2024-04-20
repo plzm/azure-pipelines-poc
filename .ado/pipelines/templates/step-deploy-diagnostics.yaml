@@ -40,7 +40,7 @@ steps:
         -TemplateUri "$templateUri" `
         -ResourceId "${{ parameters.ResourceId }}" `
         -DiagnosticsSettingName ("diag-" + "$(LogAnalyticsWorkspaceName)") `
-        -LogAnalyticsWorkspaceResourceId "$(LogAnalyticsWorkspaceResourceId)" `
+        -LogAnalyticsWorkspaceId "$(LogAnalyticsWorkspaceId)" `
         -SendAllLogs $sendAllLogs `
         -SendMetrics $sendMetrics
 

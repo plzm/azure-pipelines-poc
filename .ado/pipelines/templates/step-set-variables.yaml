@@ -71,8 +71,8 @@ steps:
       $LogAnalyticsWorkspaceName = "law-$nameInfix"
       echo "##vso[task.setvariable variable=LogAnalyticsWorkspaceName;isoutput=false]$LogAnalyticsWorkspaceName"
 
-      $LogAnalyticsWorkspaceResourceId = plzm.Azure\Get-ResourceId -SubscriptionId "$(AzureSubscriptionId)" -ResourceGroupName "$RgNameMain" -ResourceProviderName "microsoft.operationalinsights" -ResourceTypeName "workspaces" -ResourceName $LogAnalyticsWorkspaceName
-      echo "##vso[task.setvariable variable=LogAnalyticsWorkspaceResourceId;isoutput=false]$LogAnalyticsWorkspaceResourceId"
+      $LogAnalyticsWorkspaceId = plzm.Azure\Get-ResourceId -SubscriptionId "$(AzureSubscriptionId)" -ResourceGroupName "$RgNameMain" -ResourceProviderName "microsoft.operationalinsights" -ResourceTypeName "workspaces" -ResourceName $LogAnalyticsWorkspaceName
+      echo "##vso[task.setvariable variable=LogAnalyticsWorkspaceId;isoutput=false]$LogAnalyticsWorkspaceId"
 
       $UaiName = "uai-$nameInfix"
       echo "##vso[task.setvariable variable=UaiName;isoutput=false]$UaiName"
