@@ -17,11 +17,13 @@ steps:
       . ./azure-pipelines-poc/scripts/Module.ps1
       Import-PlzmAzureModule
 
+      $templateUri = "$(UriPrefixArmTemplates)monitor.log-analytics-workspace.json"
+
       $output = plzm.Azure\Deploy-LogAnalyticsWorkspace `
         -SubscriptionID "$(AzureSubscriptionId)" `
         -Location $(AzureLocation) `
         -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-        -TemplateUri "($(UriPrefixArmTemplates) + 'monitor.log-analytics-workspace.json')" `
+        -TemplateUri "$templateUri" `
         -WorkspaceName "${{ parameters.LogAnalyticsWorkspaceName }}" `
         -PublicNetworkAccessForIngestion "$(PublicNetworkAccessMonitor)" `
         -PublicNetworkAccessForQuery "$(PublicNetworkAccessMonitor)" `
