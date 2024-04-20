@@ -37,9 +37,7 @@ steps:
       $TagsCli = @($workloadTag, $envTag, $timestampTag)
       echo "##vso[task.setvariable variable=TagsCli;isoutput=false]$TagsCli"
 
-      $TagsCsv = $TagsCli -join ","
-      $TagsArm = plzm.Azure\Get-TagsForArmTemplate -Tags $TagsCsv
-
+      $TagsArm = $TagsCli -join ","
       echo "##vso[task.setvariable variable=TagsArm;isoutput=false]$TagsArm"
 
 - task: Powershell@2
