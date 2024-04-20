@@ -21,7 +21,7 @@ steps:
         -SubscriptionID "$(AzureSubscriptionId)" `
         -Location $(AzureLocation) `
         -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-        -TemplateUri ($(UriPrefixArmTemplates) + "monitor.log-analytics-workspace.json") `
+        -TemplateUri "($(UriPrefixArmTemplates) + 'monitor.log-analytics-workspace.json')" `
         -WorkspaceName "${{ parameters.LogAnalyticsWorkspaceName }}" `
         -PublicNetworkAccessForIngestion "$(PublicNetworkAccessMonitor)" `
         -PublicNetworkAccessForQuery "$(PublicNetworkAccessMonitor)" `

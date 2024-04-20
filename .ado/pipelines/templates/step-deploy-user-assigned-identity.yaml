@@ -21,7 +21,7 @@ steps:
         -SubscriptionID "$(AzureSubscriptionId)" `
         -Location $(AzureLocation) `
         -ResourceGroupName ${{ parameters.ResourceGroupName }} `
-        -TemplateUri ($(UriPrefixArmTemplates) + "identity.user-assigned-identity.json") `
+        -TemplateUri "($(UriPrefixArmTemplates) + 'identity.user-assigned-identity.json')" `
         -TenantId "$(AzureTenantId)" `
         -UAIName "${{ parameters.UaiName }}" `
         -Tags $(TagsJson)

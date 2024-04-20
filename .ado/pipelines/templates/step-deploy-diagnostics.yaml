@@ -32,7 +32,7 @@ steps:
       $output = plzm.Azure\Deploy-DiagnosticsSetting `
         -SubscriptionID "$(AzureSubscriptionId)" `
         -ResourceGroupName ${{ parameters.ResourceGroupName }} `
-        -TemplateUri ($(UriPrefixArmTemplates) + "diagnostic-settings.json") `
+        -TemplateUri "($(UriPrefixArmTemplates) + 'diagnostic-settings.json')" `
         -ResourceId "${{ parameters.ResourceId }}" `
         -DiagnosticsSettingName ("diag-" + "$(LogAnalyticsWorkspaceName)") `
         -LogAnalyticsWorkspaceResourceId "$(LogAnalyticsWorkspaceResourceId)" `

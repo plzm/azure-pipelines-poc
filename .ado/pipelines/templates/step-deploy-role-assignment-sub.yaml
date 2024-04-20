@@ -27,7 +27,7 @@ steps:
 
       $output = plzm.Azure\Deploy-RoleAssignmentSub `
         -Location $(AzureLocation) `
-        -TemplateUri ($(UriPrefixArmTemplates) + "authorization.role-assignment.sub.json") `
+        -TemplateUri "($(UriPrefixArmTemplates) + 'authorization.role-assignment.sub.json')" `
         -RoleDefinitionId "${{ parameters.RoleDefinitionId }}" `
         -PrincipalId "${{ parameters.PrincipalId }}" `
         -PrincipalType "${{ parameters.PrincipalType }}"
