@@ -25,9 +25,11 @@ steps:
       . ./azure-pipelines-poc/scripts/Module.ps1
       Import-PlzmAzureModule
 
+      $templateUri = "$(UriPrefixArmTemplates)authorization.role-assignment.sub.json"
+
       $output = plzm.Azure\Deploy-RoleAssignmentSub `
         -Location $(AzureLocation) `
-        -TemplateUri "($(UriPrefixArmTemplates) + 'authorization.role-assignment.sub.json')" `
+        -TemplateUri "$templateUri" `
         -RoleDefinitionId "${{ parameters.RoleDefinitionId }}" `
         -PrincipalId "${{ parameters.PrincipalId }}" `
         -PrincipalType "${{ parameters.PrincipalType }}"

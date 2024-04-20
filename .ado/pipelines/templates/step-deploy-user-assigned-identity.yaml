@@ -17,13 +17,15 @@ steps:
       . ./azure-pipelines-poc/scripts/Module.ps1
       Import-PlzmAzureModule
 
+      $templateUri = "$(UriPrefixArmTemplates)identity.user-assigned-identity.json"
+
       $output = plzm.Azure\Deploy-UserAssignedIdentity `
         -SubscriptionID "$(AzureSubscriptionId)" `
         -Location $(AzureLocation) `
         -ResourceGroupName ${{ parameters.ResourceGroupName }} `
-        -TemplateUri "($(UriPrefixArmTemplates) + 'identity.user-assigned-identity.json')" `
+        -TemplateUri "$templateUri" `
         -TenantId "$(AzureTenantId)" `
         -UAIName "${{ parameters.UaiName }}" `
-        -Tags $(TagsJson)
+        -Tags $(TagsArm)
 
       Write-Debug -Debug:$true -Message "$output"

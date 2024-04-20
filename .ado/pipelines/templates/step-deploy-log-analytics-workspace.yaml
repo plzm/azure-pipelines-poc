@@ -27,6 +27,6 @@ steps:
         -WorkspaceName "${{ parameters.LogAnalyticsWorkspaceName }}" `
         -PublicNetworkAccessForIngestion "$(PublicNetworkAccessMonitor)" `
         -PublicNetworkAccessForQuery "$(PublicNetworkAccessMonitor)" `
-        -Tags $(TagsJson)
+        -Tags $(TagsArm)
 
       Write-Debug -Debug:$true -Message "$output"

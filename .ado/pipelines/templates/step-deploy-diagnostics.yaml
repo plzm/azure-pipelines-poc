@@ -29,10 +29,12 @@ steps:
       . ./azure-pipelines-poc/scripts/Module.ps1
       Import-PlzmAzureModule
 
+      $templateUri = "$(UriPrefixArmTemplates)diagnostic-settings.json"
+
       $output = plzm.Azure\Deploy-DiagnosticsSetting `
         -SubscriptionID "$(AzureSubscriptionId)" `
         -ResourceGroupName ${{ parameters.ResourceGroupName }} `
-        -TemplateUri "($(UriPrefixArmTemplates) + 'diagnostic-settings.json')" `
+        -TemplateUri "$templateUri" `
         -ResourceId "${{ parameters.ResourceId }}" `
         -DiagnosticsSettingName ("diag-" + "$(LogAnalyticsWorkspaceName)") `
         -LogAnalyticsWorkspaceResourceId "$(LogAnalyticsWorkspaceResourceId)" `
