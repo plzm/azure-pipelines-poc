@@ -11,6 +11,14 @@ stages:
 
       - template: step-set-azure-cli.yaml
 
+      - task: Powershell@2
+        displayName: "Download plzm.Azure module"
+        inputs:
+          targetType: inline
+          script: |
+            . ./azure-pipelines-poc/scripts/Module.ps1
+            Get-PlzmAzureModule -UrlRoot $(UriPs1ModulePlzmAzure)
+
       - template: step-set-variables.yaml
 
       - template: step-set-variables-user-assigned-identity.yaml
