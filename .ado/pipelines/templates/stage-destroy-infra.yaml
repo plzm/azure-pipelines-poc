@@ -12,4 +12,26 @@ stages:
 
       - template: step-set-variables.yaml
 
-      - template: step-destroy-resource-groups.yaml
+      - template: step-set-variables-user-assigned-identity.yaml
+        parameters:
+          ResourceGroupName: $(RgNameMain)
+          UaiName: $(UaiName)
+
+      - template: step-delete-diagnostics-settings.yaml
+        parameters:
+          TaskName: 'Destroy Diagnostics Settings: $(RgNameWorkload)'
+          ResourceGroupName: $(RgNameWorkload)
+
+      - template: step-delete-diagnostics-settings.yaml
+        parameters:
+          TaskName: 'Destroy Diagnostics Settings: $(RgNameNetwork)'
+          ResourceGroupName: $(RgNameNetwork)
+
+      - template: step-delete-diagnostics-settings.yaml
+        parameters:
+          TaskName: 'Destroy Diagnostics Settings: $(RgNameMain)'
+          ResourceGroupName: $(RgNameMain)
+
+      - template: step-delete-role-assignments-sub.yaml
+
+      - template: step-delete-resource-groups.yaml

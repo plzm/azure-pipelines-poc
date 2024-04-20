@@ -1,0 +1,14 @@
+steps:
+- task: AzureCLI@2
+  displayName: "${{ parameters.TaskName }}"
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
+      plzm.Azure\Remove-RoleAssignments `
+        -SubscriptionId "$(AzureSubscriptionId)" `
+        -PrincipalId "$(PrincipalId)"

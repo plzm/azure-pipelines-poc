@@ -1,0 +1,24 @@
+parameters:
+- name: TaskName
+  displayName: 'Task name'
+  type: string
+  default: 'Delete Diagnostics'
+- name: ResourceGroupName
+  displayName: 'Resource Group Name in which to delete Diagnostics Settings'
+  type: string
+
+steps:
+- task: AzureCLI@2
+  displayName: "${{ parameters.TaskName }}"
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
+      Remove-DiagnosticsSettingsForAllResources `
+        -SubscriptionID "$(AzureSubscriptionId)" `
+        -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+        -LogAnalyticsWorkspaceId "$(LogAnalyticsWorkspaceId)"
