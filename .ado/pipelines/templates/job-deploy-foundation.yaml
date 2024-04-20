@@ -13,16 +13,46 @@ jobs:
 
     - template: step-set-azure-cli.yaml
 
+    - task: Powershell@2
+      displayName: "Download plzm.Azure module"
+      inputs:
+        targetType: inline
+        script: |
+          . ./azure-pipelines-poc/scripts/Module.ps1
+          Get-PlzmAzureModule -UrlRoot $(UriPs1ModulePlzmAzure)
+
     - template: step-set-variables.yaml
 
     - template: step-deploy-resource-groups.yaml
 
-    #- template: step-deploy-log-analytics-workspace.yaml
+    - template: step-deploy-log-analytics-workspace.yaml
+      parameters:
+        ResourceGroupName: $(RgNameMain)
+        LogAnalyticsWorkspaceName: $(LogAnalyticsWorkspaceName)
 
-    #- template: step-deploy-subscription-diagnostics.yaml
+    - template: step-deploy-diagnostics.yaml
+      parameters:
+        TaskName: 'Deploy Log Analytics Workspace Diagnostics'
+        ResourceGroupName: $(RgNameMain)
+        ResourceId: $(LogAnalyticsWorkspaceId)
+        SendAllLogs: true
+        SendMetrics: true
 
-    #- template: step-deploy-user-assigned-identity.yaml
+    - template: step-deploy-user-assigned-identity.yaml
+      parameters:
+        ResourceGroupName: $(RgNameMain)
+        UaiName: $(UaiName)
 
-    #- template: step-set-variables-user-assigned-identity.yaml
+    - task: Powershell@2
+      displayName: "Wait for UAI provisioning to complete"
+      inputs:
+        targetType: inline
+        script: |
+          Start-Sleep -s 60
 
-    #- template: step-deploy-role-assignments-sub.yaml
+    - template: step-set-variables-user-assigned-identity.yaml
+      parameters:
+        ResourceGroupName: $(RgNameMain)
+        UaiName: $(UaiName)
+
+    - template: steps-deploy-role-assignments-sub.yaml

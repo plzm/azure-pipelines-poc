@@ -9,15 +9,3 @@ stages:
     parameters:
       DependsOn:
       - deployPrerequisites
-
-  ## deployNetwork
-  #- template: job-deploy-network.yaml
-  #  parameters:
-  #    DependsOn:
-  #    - deployFoundation
-
-  ## deployWorkload
-  #- template: job-deploy-workload.yaml
-  #  parameters:
-  #    DependsOn:
-  #    - deployNetwork

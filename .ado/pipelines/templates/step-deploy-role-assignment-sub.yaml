@@ -1,0 +1,37 @@
+parameters:
+- name: TaskName
+  displayName: 'Task name'
+  type: string
+  default: 'Deploy Role Assignment at Subscription Scope'
+- name: RoleDefinitionId
+  displayName: 'Role Definition ID'
+  type: string
+- name: PrincipalId
+  displayName: 'Principal ID to assign the role to'
+  type: string
+- name: PrincipalType
+  displayName: 'Principal Type to assign the role to'
+  type: string
+  default: 'ServicePrincipal'
+
+steps:
+- task: AzureCLI@2
+  displayName: "${{ parameters.TaskName }}"
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
+      $templateUri = "$(UriPrefixArmTemplates)authorization.role-assignment.sub.json"
+
+      $output = plzm.Azure\Deploy-RoleAssignmentSub `
+        -Location $(AzureLocation) `
+        -TemplateUri "$templateUri" `
+        -RoleDefinitionId "${{ parameters.RoleDefinitionId }}" `
+        -PrincipalId "${{ parameters.PrincipalId }}" `
+        -PrincipalType "${{ parameters.PrincipalType }}"
+
+      Write-Debug -Debug:$true -Message "$output"

@@ -1,0 +1,12 @@
+steps:
+- template: step-deploy-role-assignment-sub.yaml
+  parameters:
+    TaskName: "Deploy Sub Role Assignment for UAI : Key Vault Secrets User"
+    RoleDefinitionId: $(RoleDefinitionIdKeyVaultSecretsUser)
+    PrincipalId: $(UaiPrincipalId)
+
+- template: step-deploy-role-assignment-sub.yaml
+  parameters:
+    TaskName: "Deploy Sub Role Assignment for UAI : Storage Blob Data Contributor"
+    RoleDefinitionId: $(RoleDefinitionIdStorageBlobDataContributor)
+    PrincipalId: $(UaiPrincipalId)

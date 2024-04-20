@@ -1,0 +1,31 @@
+parameters:
+- name: ResourceGroupName
+  displayName: 'Resource Group to deploy to'
+  type: string
+- name: UaiName
+  displayName: 'Resource ID that is getting the diagnostics setting'
+  type: string
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Deploy User-Assigned Identity'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
+      $templateUri = "$(UriPrefixArmTemplates)identity.user-assigned-identity.json"
+
+      $output = plzm.Azure\Deploy-UserAssignedIdentity `
+        -SubscriptionID "$(AzureSubscriptionId)" `
+        -Location $(AzureLocation) `
+        -ResourceGroupName ${{ parameters.ResourceGroupName }} `
+        -TemplateUri "$templateUri" `
+        -TenantId "$(AzureTenantId)" `
+        -UAIName "${{ parameters.UaiName }}" `
+        -Tags $(TagsArm)
+
+      Write-Debug -Debug:$true -Message "$output"

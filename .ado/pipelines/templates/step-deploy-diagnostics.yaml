@@ -1,0 +1,47 @@
+parameters:
+- name: TaskName
+  displayName: 'Task name'
+  type: string
+  default: 'Deploy Diagnostics'
+- name: ResourceGroupName
+  displayName: 'Resource Group to deploy to'
+  type: string
+- name: ResourceId
+  displayName: 'Resource ID that is getting the diagnostics setting'
+  type: string
+- name: SendAllLogs
+  displayName: 'Send all logs'
+  type: boolean
+  default: true
+- name: SendMetrics
+  displayName: 'Send metrics'
+  type: boolean
+  default: true
+
+steps:
+- task: AzureCLI@2
+  displayName: "${{ parameters.TaskName }}"
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
+      $sendAllLogs = if ("${{ parameters.SendAllLogs }}" -eq "true") { $true } else { $false }
+      $sendMetrics = if ("${{ parameters.SendMetrics }}" -eq "true") { $true } else { $false }
+
+      $templateUri = "$(UriPrefixArmTemplates)diagnostic-settings.json"
+
+      $output = plzm.Azure\Deploy-DiagnosticsSetting `
+        -SubscriptionID "$(AzureSubscriptionId)" `
+        -ResourceGroupName ${{ parameters.ResourceGroupName }} `
+        -TemplateUri "$templateUri" `
+        -ResourceId "${{ parameters.ResourceId }}" `
+        -DiagnosticsSettingName ("diag-" + "$(LogAnalyticsWorkspaceName)") `
+        -LogAnalyticsWorkspaceId "$(LogAnalyticsWorkspaceId)" `
+        -SendAllLogs $sendAllLogs `
+        -SendMetrics $sendMetrics
+
+      Write-Debug -Debug:$true -Message "$output"

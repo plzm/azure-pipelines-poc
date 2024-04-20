@@ -16,17 +16,6 @@ steps:
       echo "##vso[task.setvariable variable=AzureSubscriptionId;isoutput=false]$AzureSubscriptionId"
 
 - task: Powershell@2
-  displayName: 'Set Azure DevOps Variable Group Names to Environment Variables'
-  inputs:
-    targetType: inline
-    script: |
-      $VgNameAll = "vg-all"
-      echo "##vso[task.setvariable variable=VgNameAll;isoutput=false]$VgNameAll"
-
-      $VgNameEnv = "vg-$(EnvironmentInfix)"
-      echo "##vso[task.setvariable variable=VgNameEnv;isoutput=false]$VgNameEnv"
-
-- task: Powershell@2
   displayName: 'Set Tags to Environment Variables'
   inputs:
     targetType: inline
@@ -45,23 +34,17 @@ steps:
       $TagsCli = @($workloadTag, $envTag, $timestampTag)
       echo "##vso[task.setvariable variable=TagsCli;isoutput=false]$TagsCli"
 
-      $tagsObject = @{}
-      $tagsObject['$(TagNameWorkload)'] = '$(WorkloadInfix)'
-      $tagsObject['$(TagNameEnv)'] = '$(EnvironmentName)'
-      $tagsObject['$(TagNameTimestamp)'] = ($timestampTagValue)   # WARNING - this LOOKS wrong but it's not! Test carefully before you change this. Strange Powershell variable expansion rules.
-
-      # The following manipulations are needed for separate un-escaping by Powershell AND by Azure CLI, and to get CLI to correctly see the tags as a JSON string
-      # passed into ARM templates as an object type.
-      $TagsJson = ConvertTo-Json -InputObject $tagsObject -Compress
-      $TagsJson = $TagsJson.Replace('"', '''')
-      $TagsJson = "`"$TagsJson`""
-      echo "##vso[task.setvariable variable=TagsJson;isoutput=false]$TagsJson"
+      $TagsArm = $TagsCli -join ","
+      echo "##vso[task.setvariable variable=TagsArm;isoutput=false]$TagsArm"
 
 - task: Powershell@2
   displayName: 'Set Dynamic Values to Environment Variables'
   inputs:
     targetType: inline
     script: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
       # Infixes for variable names which will be emitted to Environment for later pipeline steps
       $nameInfix = "$(WorkloadInfix)-$(EnvironmentLetter)-$(AzureLocation)"
       $rgNamePrefix = "rsg-$nameInfix"
@@ -84,9 +67,16 @@ steps:
       # ##################################################
 
       # ##################################################
-      # Resource Names
-      $UaiName = "uai-$(WorkloadInfix)-$(EnvironmentLetter)"
+      # Resource Names and IDs
+      $LogAnalyticsWorkspaceName = "law-$nameInfix"
+      echo "##vso[task.setvariable variable=LogAnalyticsWorkspaceName;isoutput=false]$LogAnalyticsWorkspaceName"
+
+      $LogAnalyticsWorkspaceId = plzm.Azure\Get-ResourceId -SubscriptionId "$(AzureSubscriptionId)" -ResourceGroupName "$RgNameMain" -ResourceProviderName "microsoft.operationalinsights" -ResourceTypeName "workspaces" -ResourceName $LogAnalyticsWorkspaceName
+      echo "##vso[task.setvariable variable=LogAnalyticsWorkspaceId;isoutput=false]$LogAnalyticsWorkspaceId"
+
+      $UaiName = "uai-$nameInfix"
       echo "##vso[task.setvariable variable=UaiName;isoutput=false]$UaiName"
+      ### $UaiClientId and $UaiPrincipalId are set in step-set-variables-user-assigned-identity.yaml
 
       $StorageAccountName = "sa" + $nameInfix.Replace("-", "").ToLowerInvariant()  # Storage account names can only have alphanumerics and must be lowercase
       echo "##vso[task.setvariable variable=StorageAccountName;isoutput=false]$StorageAccountName"

@@ -3,7 +3,7 @@ name: '$(Date:yyyyMMdd).$(Rev:rr)'
 trigger: none
   #branches:
   #  include:
-  #  - 'develop'
+  #  - 'main'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -11,9 +11,9 @@ pool:
 variables:
 - group: vg-all
 - group: vg-security
-- group: vg-dev
+- group: vg-prod
 - name: 'AzureServiceConnection'
-  value: 'sc-dev'
+  value: 'sc-prod'
 
 stages:
 - template: templates/stage-deploy-infra.yaml

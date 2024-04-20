@@ -1,0 +1,32 @@
+parameters:
+- name: ResourceGroupName
+  displayName: 'Resource Group to deploy to'
+  type: string
+- name: LogAnalyticsWorkspaceName
+  displayName: 'Resource ID that is getting the diagnostics setting'
+  type: string
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Deploy Log Analytics Workspace'
+  inputs:
+    azureSubscription: '$(AzureServiceConnection)'
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      . ./azure-pipelines-poc/scripts/Module.ps1
+      Import-PlzmAzureModule
+
+      $templateUri = "$(UriPrefixArmTemplates)monitor.log-analytics-workspace.json"
+
+      $output = plzm.Azure\Deploy-LogAnalyticsWorkspace `
+        -SubscriptionID "$(AzureSubscriptionId)" `
+        -Location $(AzureLocation) `
+        -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+        -TemplateUri "$templateUri" `
+        -WorkspaceName "${{ parameters.LogAnalyticsWorkspaceName }}" `
+        -PublicNetworkAccessForIngestion "$(PublicNetworkAccessMonitor)" `
+        -PublicNetworkAccessForQuery "$(PublicNetworkAccessMonitor)" `
+        -Tags "$(TagsArm)"
+
+      Write-Debug -Debug:$true -Message "$output"
