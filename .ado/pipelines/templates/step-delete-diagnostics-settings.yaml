@@ -13,6 +13,8 @@ steps:
   inputs:
     azureSubscription: '$(AzureServiceConnection)'
     scriptType: pscore
+    powerShellErrorActionPreference: 'continue'
+    powerShellIgnoreLASTEXITCODE: true
     scriptLocation: inlineScript
     inlineScript: |
       . ./azure-pipelines-poc/scripts/Module.ps1
@@ -22,21 +24,3 @@ steps:
         -SubscriptionID "$(AzureSubscriptionId)" `
         -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
         -LogAnalyticsWorkspaceId "$(LogAnalyticsWorkspaceId)"
-
-#- task: AzurePowerShell@5
-#  displayName: "${{ parameters.TaskName }}"
-#  inputs:
-#    azureSubscription: '$(AzureServiceConnection)'
-#    pwsh: true
-#    azurePowerShellVersion: 'LatestVersion'
-#    ScriptType: 'InlineScript'
-#    errorActionPreference: 'stop'
-#    FailOnStandardError: true
-#    Inline: |
-#      . ./azure-pipelines-poc/scripts/Module.ps1
-#      Import-PlzmAzureModule
-
-#      Remove-DiagnosticsSettingsForAllResources `
-#        -SubscriptionID "$(AzureSubscriptionId)" `
-#        -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-#        -LogAnalyticsWorkspaceId "$(LogAnalyticsWorkspaceId)"
