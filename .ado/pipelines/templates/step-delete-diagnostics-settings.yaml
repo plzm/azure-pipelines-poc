@@ -13,6 +13,8 @@ steps:
   inputs:
     azureSubscription: '$(AzureServiceConnection)'
     scriptType: pscore
+    powerShellErrorActionPreference: 'continue'
+    powerShellIgnoreLASTEXITCODE: true
     scriptLocation: inlineScript
     inlineScript: |
       . ./azure-pipelines-poc/scripts/Module.ps1
