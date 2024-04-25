@@ -11,12 +11,12 @@ stages:
 
       - template: step-set-azure-cli.yaml
 
-      - task: Powershell@2
-        displayName: "Install Azure Powershell modules"
-        inputs:
-          targetType: inline
-          script: |
-            Install-Module -Name "Az.Accounts" -Force -AllowClobber -Scope CurrentUser
+      #- task: Powershell@2
+      #  displayName: "Install Azure Powershell modules"
+      #  inputs:
+      #    targetType: inline
+      #    script: |
+      #      Install-Module -Name "Az.Accounts" -Force -AllowClobber -Scope CurrentUser
 
       - task: Powershell@2
         displayName: "Download plzm.Azure module"
